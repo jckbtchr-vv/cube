@@ -1,0 +1,671 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Cube &mdash; Coachella</title>
+  <meta name="description" content="250,000 attendees. Two weekends. One format.">
+  <style>
+    *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+
+    :root {
+      --bg: #ffffff;
+      --fg: #1d1d1f;
+      --body: #6e6e73;
+      --light: #f5f5f7;
+      --rule: rgba(0, 0, 0, 0.08);
+      --sand: #e8dcc8;
+      --night: #1d1d1f;
+      --sans: -apple-system, BlinkMacSystemFont, 'SF Pro Display', 'SF Pro Text', 'Helvetica Neue', Helvetica, Arial, sans-serif;
+    }
+
+    html { scroll-behavior: smooth; -webkit-font-smoothing: antialiased; -moz-osx-font-smoothing: grayscale; }
+    body { background: var(--bg); color: var(--fg); font-family: var(--sans); overflow-x: hidden; }
+    ::selection { background: rgba(0, 0, 0, 0.08); }
+
+    .container { max-width: 980px; margin: 0 auto; padding: 0 2rem; }
+    .narrow { max-width: 720px; margin: 0 auto; padding: 0 2rem; }
+    section { padding: 10rem 0; }
+    .break { width: 100%; height: 1px; background: var(--rule); max-width: 980px; margin: 0 auto; }
+
+    /* ---- NAV ---- */
+    .nav {
+      position: fixed; top: 0; left: 0; right: 0; z-index: 100;
+      background: rgba(255, 255, 255, 0.85);
+      backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px);
+      border-bottom: 1px solid var(--rule);
+    }
+    .nav-inner {
+      max-width: 980px; margin: 0 auto; padding: 0 2rem;
+      height: 52px; display: flex; align-items: center; justify-content: space-between;
+    }
+    .nav-mark { font-size: 0.9rem; font-weight: 700; letter-spacing: 0.04em; text-transform: uppercase; text-decoration: none; color: var(--fg); }
+    .nav-links { display: flex; gap: 1.5rem; }
+    .nav-link { font-size: 0.8rem; font-weight: 500; color: var(--body); text-decoration: none; transition: color 0.2s; }
+    .nav-link:hover { color: var(--fg); }
+
+    .nav-cta {
+      font-size: 0.8rem;
+      font-weight: 600;
+      color: var(--bg);
+      background: var(--fg);
+      padding: 0.45rem 1.1rem;
+      border-radius: 100px;
+      text-decoration: none;
+      transition: opacity 0.2s;
+    }
+
+    .nav-cta:hover { opacity: 0.85; }
+
+    /* ---- TYPOGRAPHY ---- */
+    .label { font-size: 0.75rem; font-weight: 600; text-transform: uppercase; letter-spacing: 0.06em; color: var(--body); margin-bottom: 1rem; }
+    .headline { font-size: clamp(2.5rem, 6vw, 4.5rem); font-weight: 700; letter-spacing: -0.025em; line-height: 0.95; color: var(--fg); }
+    .headline-xl { font-size: clamp(3rem, 8vw, 6rem); font-weight: 700; letter-spacing: -0.03em; line-height: 0.92; color: var(--fg); }
+    .subhead { font-size: clamp(1.25rem, 2.5vw, 1.75rem); font-weight: 600; letter-spacing: -0.015em; line-height: 1.1; color: var(--fg); }
+    .body-text { font-size: 1.125rem; line-height: 1.65; color: var(--body); font-weight: 400; }
+    .body-text strong { color: var(--fg); font-weight: 600; }
+    .body-large { font-size: clamp(1.25rem, 2vw, 1.5rem); line-height: 1.55; color: var(--body); font-weight: 400; }
+    .body-large strong { color: var(--fg); font-weight: 600; }
+    .quote { font-size: clamp(1.5rem, 3.5vw, 2.5rem); font-weight: 600; letter-spacing: -0.02em; line-height: 1.1; color: var(--fg); }
+
+    /* ---- HERO ---- */
+    .hero {
+      min-height: 100vh; display: flex; flex-direction: column; justify-content: center;
+      padding: 8rem 2rem 6rem; max-width: 980px; margin: 0 auto;
+    }
+    .hero-stat {
+      font-size: clamp(4rem, 12vw, 9rem); font-weight: 700;
+      letter-spacing: -0.04em; line-height: 0.85; margin-bottom: 2rem;
+    }
+    .hero-context {
+      font-size: clamp(1.1rem, 2vw, 1.4rem); font-weight: 400;
+      color: var(--body); max-width: 520px; line-height: 1.5;
+    }
+    .hero-meta {
+      margin-top: 3rem; display: flex; gap: 2.5rem; flex-wrap: wrap;
+    }
+    .hero-meta-item { display: flex; flex-direction: column; gap: 0.25rem; }
+    .hero-meta-value { font-size: 1.1rem; font-weight: 600; }
+    .hero-meta-label { font-size: 0.75rem; font-weight: 500; color: var(--body); }
+
+    /* ---- COMPARISON ---- */
+    .compare {
+      display: grid; grid-template-columns: 1fr 40px 1fr; gap: 0; align-items: start; margin: 4rem 0;
+    }
+    .compare-col {
+      background: var(--light); border-radius: 20px; padding: 2.5rem 2rem;
+    }
+    .compare-vs {
+      display: flex; align-items: center; justify-content: center;
+      font-size: 0.75rem; font-weight: 600; color: var(--body); align-self: center;
+    }
+    .compare-label {
+      font-size: 0.7rem; font-weight: 600; text-transform: uppercase;
+      letter-spacing: 0.06em; color: var(--body); margin-bottom: 1rem;
+    }
+    .compare-stat {
+      font-size: clamp(2rem, 4vw, 3rem); font-weight: 700; letter-spacing: -0.02em;
+      line-height: 1; margin-bottom: 0.25rem;
+    }
+    .compare-desc {
+      font-size: 0.85rem; color: var(--body); margin-bottom: 1.25rem; line-height: 1.5;
+    }
+
+    /* ---- CARDS ---- */
+    .card { background: var(--light); border-radius: 20px; padding: 2.5rem 2rem; }
+    .card h3 { font-size: 1.35rem; font-weight: 700; letter-spacing: -0.01em; margin-bottom: 0.75rem; }
+    .card p { font-size: 0.95rem; line-height: 1.65; color: var(--body); }
+    .card p strong { color: var(--fg); font-weight: 600; }
+    .card-label { font-size: 0.7rem; font-weight: 600; text-transform: uppercase; letter-spacing: 0.06em; color: var(--body); margin-bottom: 0.75rem; }
+
+    /* ---- STAGE GRID ---- */
+    .stages {
+      display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 1.25rem; margin: 4rem 0;
+    }
+    .stage {
+      background: var(--light); border-radius: 20px; padding: 2rem 1.75rem;
+      display: flex; flex-direction: column;
+    }
+    .stage-name {
+      font-size: 1.1rem; font-weight: 700; letter-spacing: -0.01em; margin-bottom: 0.5rem;
+    }
+    .stage-material {
+      font-size: 0.8rem; font-weight: 500; color: var(--body); margin-bottom: 1rem;
+      padding-bottom: 1rem; border-bottom: 1px solid var(--rule);
+    }
+    .stage p {
+      font-size: 0.85rem; line-height: 1.6; color: var(--body); margin-top: auto;
+    }
+
+    /* ---- PRODUCT CONCEPTS ---- */
+    .concepts {
+      display: grid; grid-template-columns: 1fr 1fr; gap: 1.25rem; margin: 4rem 0;
+    }
+    .concept {
+      border-radius: 24px; padding: 3rem 2.5rem; position: relative; overflow: hidden;
+    }
+    .concept h3 { font-size: 1.5rem; font-weight: 700; letter-spacing: -0.015em; margin-bottom: 0.75rem; }
+    .concept p { font-size: 0.95rem; line-height: 1.6; }
+    .concept p strong { font-weight: 600; }
+
+    .concept-sand {
+      background: var(--sand); color: #3d3528;
+    }
+    .concept-sand p { color: #6b5d49; }
+    .concept-sand p strong { color: #3d3528; }
+
+    .concept-night {
+      background: var(--night); color: #f5f5f7;
+    }
+    .concept-night p { color: rgba(245, 245, 247, 0.6); }
+    .concept-night p strong { color: #f5f5f7; }
+
+    .concept-mirror {
+      background: linear-gradient(135deg, #e8e8e8 0%, #f8f8f8 50%, #e0e0e0 100%);
+      color: #1d1d1f;
+    }
+    .concept-mirror p { color: #6e6e73; }
+    .concept-mirror p strong { color: #1d1d1f; }
+
+    .concept-art {
+      background: var(--light); color: var(--fg);
+    }
+    .concept-art p { color: var(--body); }
+    .concept-art p strong { color: var(--fg); }
+
+    /* ---- WEEKEND MECHANIC ---- */
+    .weekends {
+      display: grid; grid-template-columns: 1fr 1fr; gap: 1.25rem; margin: 4rem 0;
+    }
+    .weekend-card {
+      background: var(--light); border-radius: 20px; padding: 2.5rem 2rem;
+    }
+    .weekend-num {
+      font-size: 3rem; font-weight: 700; letter-spacing: -0.03em; line-height: 1; margin-bottom: 0.75rem;
+    }
+    .weekend-card h3 { font-size: 1.2rem; font-weight: 700; margin-bottom: 0.75rem; }
+    .weekend-card p { font-size: 0.95rem; line-height: 1.6; color: var(--body); }
+    .weekend-card p strong { color: var(--fg); font-weight: 600; }
+
+    /* ---- BRAND SLOTS ---- */
+    .brand-slots {
+      display: grid; grid-template-columns: repeat(3, 1fr); gap: 1.25rem; margin: 4rem 0;
+    }
+    .brand-slot {
+      background: var(--light); border-radius: 20px; padding: 2rem 1.75rem; text-align: center;
+    }
+    .brand-slot-type {
+      font-size: 0.7rem; font-weight: 600; text-transform: uppercase;
+      letter-spacing: 0.06em; color: var(--body); margin-bottom: 0.75rem;
+    }
+    .brand-slot-name {
+      font-size: 1.1rem; font-weight: 700; margin-bottom: 0.5rem;
+    }
+    .brand-slot-material {
+      font-size: 0.85rem; color: var(--body); margin-bottom: 0.75rem;
+    }
+    .brand-slot p {
+      font-size: 0.8rem; line-height: 1.5; color: var(--body);
+    }
+
+    /* ---- NUMBERS ---- */
+    .numbers {
+      display: grid; grid-template-columns: repeat(3, 1fr); gap: 1.25rem; margin: 4rem 0;
+    }
+    .number-card {
+      background: var(--light); border-radius: 20px; padding: 2.5rem 2rem; text-align: center;
+    }
+    .number-big {
+      font-size: clamp(2.5rem, 5vw, 3.5rem); font-weight: 700;
+      letter-spacing: -0.03em; line-height: 1; margin-bottom: 0.5rem;
+    }
+    .number-label { font-size: 0.8rem; font-weight: 500; color: var(--body); }
+
+    /* ---- FLYWHEEL ---- */
+    .flywheel {
+      display: flex; align-items: center; justify-content: center;
+      flex-wrap: wrap; gap: 0; margin: 4rem 0;
+    }
+    .flywheel-step { font-size: 0.85rem; font-weight: 500; color: var(--body); padding: 0.5rem 0; }
+    .flywheel-arrow { color: rgba(0, 0, 0, 0.2); padding: 0 1rem; font-size: 0.9rem; }
+    .flywheel-step:last-child { color: var(--fg); font-weight: 600; }
+
+    /* ---- HERO IMAGE ---- */
+    .hero-image-contained {
+      max-width: 980px;
+      margin: 0 auto;
+      border-radius: 20px;
+      overflow: hidden;
+    }
+
+    .hero-image-contained img {
+      width: 100%;
+      display: block;
+    }
+
+    .image-scroll {
+      display: flex;
+      gap: 1.25rem;
+      overflow-x: auto;
+      scroll-snap-type: x mandatory;
+      -webkit-overflow-scrolling: touch;
+      padding: 0 2rem 1.5rem;
+      scrollbar-width: none;
+    }
+
+    .image-scroll::-webkit-scrollbar { display: none; }
+
+    .image-scroll-item {
+      flex: 0 0 auto;
+      height: 70vh;
+      max-height: 600px;
+      border-radius: 20px;
+      overflow: hidden;
+      scroll-snap-align: center;
+    }
+
+    .image-scroll-item img {
+      height: 100%;
+      width: auto;
+      display: block;
+    }
+
+    .image-caption {
+      text-align: center;
+      margin-top: 1rem;
+      font-size: 0.8rem;
+      font-weight: 500;
+      color: var(--body);
+      padding: 0 2rem;
+    }
+
+    @media (max-width: 734px) {
+      .image-scroll-item { height: 50vh; max-height: 400px; }
+    }
+
+    /* ---- CTA ---- */
+    .cta-section { text-align: center; padding: 10rem 2rem; }
+    .cta-link {
+      display: inline-block; font-size: 0.85rem; font-weight: 600;
+      color: var(--bg); background: var(--fg); padding: 0.9rem 2.5rem;
+      border-radius: 100px; text-decoration: none; margin-top: 2.5rem; transition: opacity 0.2s;
+    }
+    .cta-link:hover { opacity: 0.85; }
+
+    /* ---- FOOTER ---- */
+    .footer { padding: 3rem 0 5rem; text-align: center; }
+    .footer-mark { font-size: 1rem; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase; margin-bottom: 0.5rem; }
+    .footer-sub { font-size: 0.85rem; color: var(--body); }
+
+    /* ---- FADE ---- */
+    .fade {
+      opacity: 0; transform: translateY(24px);
+      transition: opacity 0.9s cubic-bezier(0.25, 0.46, 0.45, 0.94), transform 0.9s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+    }
+    .fade.visible { opacity: 1; transform: translateY(0); }
+    .fade-d1 { transition-delay: 0.1s; }
+    .fade-d2 { transition-delay: 0.2s; }
+    .fade-d3 { transition-delay: 0.3s; }
+
+    /* ---- RESPONSIVE ---- */
+    @media (max-width: 734px) {
+      section { padding: 6rem 0; }
+      .container, .narrow { padding: 0 1.5rem; }
+      .hero { padding: 7rem 1.5rem 4rem; }
+      .hero-meta { gap: 1.5rem; }
+      .compare { grid-template-columns: 1fr; gap: 1.25rem; }
+      .compare-vs { display: none; }
+      .stages { grid-template-columns: 1fr; }
+      .concepts { grid-template-columns: 1fr; }
+      .weekends { grid-template-columns: 1fr; }
+      .brand-slots { grid-template-columns: 1fr; }
+      .numbers { grid-template-columns: 1fr; }
+      .cta-section { padding: 6rem 1.5rem; }
+      .flywheel { flex-direction: column; gap: 0.5rem; }
+      .flywheel-arrow { transform: rotate(90deg); padding: 0; }
+    }
+  </style>
+</head>
+<body>
+
+  <nav class="nav">
+    <div class="nav-inner">
+      <a href="index.html" class="nav-mark">Cube</a>
+      <div class="nav-links" style="align-items:center;">
+        <a href="partner.html" class="nav-link">Partner</a>
+        <a href="coachella.html" class="nav-link">Coachella</a>
+        <a href="partner.html" class="nav-cta">Get your Cube</a>
+      </div>
+    </div>
+  </nav>
+
+  <!-- HERO -->
+  <section class="hero">
+    <div class="label fade">Proposal</div>
+    <div class="hero-stat fade fade-d1">Coachella<br>&times; Cube</div>
+    <p class="hero-context fade fade-d2">
+      250,000 attendees. Two weekends. Six stages. One format that turns a festival into a game.
+    </p>
+    <div class="hero-meta fade fade-d3">
+      <div class="hero-meta-item">
+        <span class="hero-meta-value">Coachella 2027</span>
+        <span class="hero-meta-label">Event</span>
+      </div>
+      <div class="hero-meta-item">
+        <span class="hero-meta-value">Two weekends</span>
+        <span class="hero-meta-label">Format</span>
+      </div>
+      <div class="hero-meta-item">
+        <span class="hero-meta-value">19mm cube</span>
+        <span class="hero-meta-label">Form factor</span>
+      </div>
+    </div>
+  </section>
+
+  <div class="break"></div>
+
+  <!-- PROOF -->
+  <section>
+    <div class="container">
+      <div class="label fade">Proven at Scale</div>
+      <h2 class="headline fade" style="margin-bottom: 2.5rem;">This already worked.<br>At Art Basel.</h2>
+      <p class="body-large fade" style="max-width: 640px; margin-bottom: 1.5rem;">
+        A 19mm cube started 100,000 conversations between strangers in five days at Art Basel Hong Kong. Starbucks integrated as a brand partner. 750 signed sets were claimed. <strong>The mechanic is proven. The format scales.</strong>
+      </p>
+    </div>
+
+    <div class="container" style="margin-top: 3rem;">
+      <div class="compare fade">
+        <div class="compare-col">
+          <div class="compare-label">Art Basel Hong Kong</div>
+          <div class="compare-stat">100K</div>
+          <div class="compare-desc">Conversations in 5 days</div>
+          <div class="compare-stat">30K</div>
+          <div class="compare-desc">Attendees per day</div>
+          <div class="compare-stat">1</div>
+          <div class="compare-desc">Weekend</div>
+        </div>
+        <div class="compare-vs">&rarr;</div>
+        <div class="compare-col">
+          <div class="compare-label">Coachella</div>
+          <div class="compare-stat">250K+</div>
+          <div class="compare-desc">Projected conversations</div>
+          <div class="compare-stat">125K</div>
+          <div class="compare-desc">Attendees per day</div>
+          <div class="compare-stat">2</div>
+          <div class="compare-desc">Weekends</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="container" style="margin-top: 3rem;">
+      <div class="image-scroll fade">
+        <div class="image-scroll-item"><img src="images/silver-cubes.jpg" alt="Six sterling silver cubes by Asprey Studio, London"></div>
+        <div class="image-scroll-item"><img src="images/resin-cubes.jpg" alt="Transparent resin dice signed by Jack Butcher"></div>
+      </div>
+      <p class="image-caption fade">Sterling silver by Asprey Studio, London. Transparent resin, signed editions.</p>
+    </div>
+  </section>
+
+  <div class="break"></div>
+
+  <!-- THE MECHANIC -->
+  <section>
+    <div class="container">
+      <div class="label fade">The Mechanic</div>
+      <h2 class="headline-xl fade" style="margin-bottom: 2.5rem;">The festival<br>is the game board.</h2>
+      <p class="body-large fade" style="max-width: 640px;">
+        Each stage has a unique cube. Visit a stage, get that cube. Trade with strangers to collect all six. Complete the set, bring it to the Cube booth. <strong>The cube gives people a reason to explore, approach, and connect.</strong>
+      </p>
+    </div>
+
+    <div class="container" style="margin-top: 4rem;">
+      <h3 class="subhead fade" style="margin-bottom: 2rem;">Six stages. Six cubes.</h3>
+      <div class="stages fade">
+        <div class="stage">
+          <div class="stage-name">Main Stage</div>
+          <div class="stage-material">Brushed aluminum</div>
+          <p>The anchor. Heavy, reflective, unmistakable. The cube everyone starts with.</p>
+        </div>
+        <div class="stage">
+          <div class="stage-name">Sahara</div>
+          <div class="stage-material">Translucent resin</div>
+          <p>Electronic. Glows under UV. The night cube.</p>
+        </div>
+        <div class="stage">
+          <div class="stage-name">Mojave</div>
+          <div class="stage-material">Raw concrete</div>
+          <p>Indie. Rough-cast. Feels handmade because it is.</p>
+        </div>
+        <div class="stage">
+          <div class="stage-name">Gobi</div>
+          <div class="stage-material">Matte ceramic</div>
+          <p>Discovery stage. Smooth, warm to the touch. The sleeper favorite.</p>
+        </div>
+        <div class="stage">
+          <div class="stage-name">Outdoor</div>
+          <div class="stage-material">Smoked glass</div>
+          <p>See-through but dark. Catches the desert light.</p>
+        </div>
+        <div class="stage">
+          <div class="stage-name">Sonora</div>
+          <div class="stage-material">Charred wood</div>
+          <p>Intimate. The rarest stage cube. Hardest to find in a trade.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <div class="break"></div>
+
+  <!-- HERO PRODUCTS -->
+  <section>
+    <div class="container">
+      <div class="label fade">Hero Products</div>
+      <h2 class="headline fade" style="margin-bottom: 1.5rem;">Four cubes that<br>tell the story.</h2>
+      <p class="body-text fade" style="max-width: 560px;">Beyond the stage cubes, these are the objects that define the Coachella &times; Cube experience.</p>
+    </div>
+
+    <div class="container" style="margin-top: 3rem;">
+      <div class="concepts fade">
+        <div class="concept concept-sand">
+          <div class="card-label">The Volume</div>
+          <h3>The Desert Cube</h3>
+          <p>Clear resin with actual Coachella desert sand sealed inside. <strong>Literal "I was there" encased at palm scale.</strong> Different years use sand from different areas of the grounds. A time capsule of the festival, permanently preserved.</p>
+        </div>
+        <div class="concept concept-night">
+          <div class="card-label" style="color: rgba(245,245,247,0.5);">After Dark</div>
+          <h3>The Sunset Cube</h3>
+          <p>Glow-in-the-dark resin. Only available after sundown. Charges in daylight, glows through the night. <strong>Temporal scarcity &mdash; you can only get this cube when the sun is gone.</strong></p>
+        </div>
+        <div class="concept concept-mirror">
+          <div class="card-label">Golden Hour</div>
+          <h3>The Mirror Cube</h3>
+          <p>Polished stainless steel. Only available during golden hour, 5&ndash;7pm. <strong>Catches the desert light at the exact moment the festival transforms.</strong> The most photographed cube.</p>
+        </div>
+        <div class="concept concept-art">
+          <div class="card-label">Installation</div>
+          <h3>The Artist Cube</h3>
+          <p>Each major art installation artist designs a cube in their installation's material. <strong>A pocket-scale version of a large-scale work.</strong> The art you can take home.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <div class="break"></div>
+
+  <!-- TWO WEEKENDS -->
+  <section>
+    <div class="container">
+      <div class="label fade">The Two-Weekend Advantage</div>
+      <h2 class="headline-xl fade" style="margin-bottom: 2.5rem;">The game doesn't end<br>when the festival does.</h2>
+      <p class="body-large fade" style="max-width: 640px;">
+        Two weekends create a mechanic Art Basel didn't have. Some cubes only exist on one weekend. Completing a full set means crossing the weekend divide.
+      </p>
+    </div>
+
+    <div class="container" style="margin-top: 3rem;">
+      <div class="weekends fade">
+        <div class="weekend-card">
+          <div class="weekend-num">W1</div>
+          <h3>Weekend One</h3>
+          <p>Participants collect cubes, post on social media, start trading. <strong>Exclusive W1 editions create scarcity.</strong> The mechanic is new. The discovery is raw.</p>
+        </div>
+        <div class="weekend-card">
+          <div class="weekend-num">W2</div>
+          <h3>Weekend Two</h3>
+          <p>Attendees arrive already knowing the game. Participation rate 3&ndash;5x higher. <strong>Exclusive W2 editions complete the cross-weekend set.</strong> The game is pre-sold.</p>
+        </div>
+      </div>
+    </div>
+
+    <div class="narrow" style="margin-top: 3rem;">
+      <div class="flywheel fade">
+        <span class="flywheel-step">W1 posts cubes</span>
+        <span class="flywheel-arrow">&rarr;</span>
+        <span class="flywheel-step">W2 arrives informed</span>
+        <span class="flywheel-arrow">&rarr;</span>
+        <span class="flywheel-step">Higher participation</span>
+        <span class="flywheel-arrow">&rarr;</span>
+        <span class="flywheel-step">Cross-weekend trading</span>
+        <span class="flywheel-arrow">&rarr;</span>
+        <span class="flywheel-step">The game outlives the event</span>
+      </div>
+    </div>
+  </section>
+
+  <div class="break"></div>
+
+  <!-- BRAND ACTIVATIONS -->
+  <section>
+    <div class="container">
+      <div class="label fade">Brand Integration</div>
+      <h2 class="headline fade" style="margin-bottom: 2.5rem;">Brands don't sponsor<br>the game. They enter it.</h2>
+      <p class="body-large fade" style="max-width: 640px; margin-bottom: 1.5rem;">
+        Every brand that activates at Coachella gets a cube in their signature material. Their activation becomes a pickup point. <strong>The cube IS the brand experience.</strong>
+      </p>
+      <p class="body-text fade" style="max-width: 640px;">
+        Collect brand cubes alongside stage cubes for the mega set. This isn't a logo placement. It's a participation mechanic that makes the brand part of the game.
+      </p>
+    </div>
+
+    <div class="container" style="margin-top: 3rem;">
+      <div class="brand-slots fade">
+        <div class="brand-slot">
+          <div class="brand-slot-type">Spirits</div>
+          <div class="brand-slot-name">Crystal cube</div>
+          <div class="brand-slot-material">Leaded glass</div>
+          <p>Available at their bar activation. Order a drink, receive a cube.</p>
+        </div>
+        <div class="brand-slot">
+          <div class="brand-slot-type">Automotive</div>
+          <div class="brand-slot-name">Aluminum cube</div>
+          <div class="brand-slot-material">Anodized metal</div>
+          <p>Available at their lounge. Test drive, receive a cube.</p>
+        </div>
+        <div class="brand-slot">
+          <div class="brand-slot-type">Fashion</div>
+          <div class="brand-slot-name">Leather cube</div>
+          <div class="brand-slot-material">Full-grain leather</div>
+          <p>Available at their pop-up. Try on, receive a cube.</p>
+        </div>
+        <div class="brand-slot">
+          <div class="brand-slot-type">Tech</div>
+          <div class="brand-slot-name">Carbon cube</div>
+          <div class="brand-slot-material">Carbon fiber</div>
+          <p>Available at their experience. Interact, receive a cube.</p>
+        </div>
+        <div class="brand-slot">
+          <div class="brand-slot-type">Beauty</div>
+          <div class="brand-slot-name">Rose quartz cube</div>
+          <div class="brand-slot-material">Polished stone</div>
+          <p>Available at their lounge. Sample, receive a cube.</p>
+        </div>
+        <div class="brand-slot">
+          <div class="brand-slot-type">F&B</div>
+          <div class="brand-slot-name">Ceramic cube</div>
+          <div class="brand-slot-material">Glazed stoneware</div>
+          <p>Available at their food station. Eat, receive a cube.</p>
+        </div>
+      </div>
+    </div>
+
+    <div class="narrow" style="margin-top: 2rem;">
+      <p class="body-text fade" style="text-align: center;">
+        Each brand pays to enter the format. Their audience collects their cube. <strong>Their cube lives on the same shelf as every other Cube.</strong> That's the cross-pollination.
+      </p>
+    </div>
+  </section>
+
+  <div class="break"></div>
+
+  <!-- THE NUMBERS -->
+  <section>
+    <div class="container">
+      <div class="label fade" style="text-align: center;">Projected Impact</div>
+      <h2 class="headline fade" style="text-align: center; margin-bottom: 1rem;">The math.</h2>
+      <p class="body-text fade" style="text-align: center; max-width: 500px; margin: 0 auto;">
+        Conservative estimates based on Art Basel performance.
+      </p>
+
+      <div class="numbers fade">
+        <div class="number-card">
+          <div class="number-big">250K+</div>
+          <div class="number-label">Projected conversations</div>
+        </div>
+        <div class="number-card">
+          <div class="number-big">25K</div>
+          <div class="number-label">Active participants (10%)</div>
+        </div>
+        <div class="number-card">
+          <div class="number-big">6+</div>
+          <div class="number-label">Brand partners</div>
+        </div>
+      </div>
+
+      <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1.25rem; margin-top: 1.25rem;" class="fade">
+        <div class="card">
+          <h3>Post-event engagement</h3>
+          <p>Cross-weekend trading extends the game weeks beyond the festival. <strong>Social media posts of cube collections provide ongoing organic reach.</strong></p>
+        </div>
+        <div class="card">
+          <h3>Second case study</h3>
+          <p>Art fair &rarr; music festival proves the format works across industries. <strong>This unlocks every other event vertical.</strong></p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <div class="break"></div>
+
+  <!-- CTA -->
+  <section class="cta-section">
+    <div class="fade">
+      <div class="label" style="text-align: center;">Proposal</div>
+      <p class="quote" style="max-width: 700px; margin: 0 auto;">
+        Art Basel was the proof.<br>
+        Coachella is the scale.
+      </p>
+      <a href="mailto:jack@jackbutcher.com" class="cta-link">Let's build this</a>
+    </div>
+  </section>
+
+  <div class="break"></div>
+  <footer class="footer">
+    <p class="footer-mark fade">Cube</p>
+    <p class="footer-sub fade">Jack Butcher</p>
+  </footer>
+
+  <script>
+    const observer = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((entry) => {
+          if (entry.isIntersecting) entry.target.classList.add('visible');
+        });
+      },
+      { threshold: 0.08, rootMargin: '0px 0px -60px 0px' }
+    );
+    document.querySelectorAll('.fade').forEach((el) => observer.observe(el));
+  </script>
+</body>
+</html>

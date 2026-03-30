@@ -1,0 +1,849 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Cube &mdash; Partner</title>
+  <meta name="description" content="100,000 conversations. 5 days. 1 form factor.">
+  <style>
+    *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+
+    :root {
+      --bg: #ffffff;
+      --fg: #1d1d1f;
+      --body: #6e6e73;
+      --light: #f5f5f7;
+      --rule: rgba(0, 0, 0, 0.08);
+      --sans: -apple-system, BlinkMacSystemFont, 'SF Pro Display', 'SF Pro Text', 'Helvetica Neue', Helvetica, Arial, sans-serif;
+    }
+
+    html { scroll-behavior: smooth; -webkit-font-smoothing: antialiased; -moz-osx-font-smoothing: grayscale; }
+    body { background: var(--bg); color: var(--fg); font-family: var(--sans); overflow-x: hidden; }
+    ::selection { background: rgba(0, 0, 0, 0.08); }
+
+    /* ---- LAYOUT ---- */
+    .container { max-width: 980px; margin: 0 auto; padding: 0 2rem; }
+    .narrow { max-width: 720px; margin: 0 auto; padding: 0 2rem; }
+    section { padding: 10rem 0; }
+    .break { width: 100%; height: 1px; background: var(--rule); max-width: 980px; margin: 0 auto; }
+
+    /* ---- NAV ---- */
+    .nav {
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      z-index: 100;
+      background: rgba(255, 255, 255, 0.85);
+      backdrop-filter: blur(20px);
+      -webkit-backdrop-filter: blur(20px);
+      border-bottom: 1px solid var(--rule);
+    }
+
+    .nav-inner {
+      max-width: 980px;
+      margin: 0 auto;
+      padding: 0 2rem;
+      height: 52px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .nav-mark {
+      font-size: 0.9rem;
+      font-weight: 700;
+      letter-spacing: 0.04em;
+      text-transform: uppercase;
+      text-decoration: none;
+      color: var(--fg);
+    }
+
+    .nav-link {
+      font-size: 0.8rem;
+      font-weight: 500;
+      color: var(--body);
+      text-decoration: none;
+      transition: color 0.2s;
+    }
+
+    .nav-link:hover { color: var(--fg); }
+
+    .nav-cta {
+      font-size: 0.8rem;
+      font-weight: 600;
+      color: var(--bg);
+      background: var(--fg);
+      padding: 0.45rem 1.1rem;
+      border-radius: 100px;
+      text-decoration: none;
+      transition: opacity 0.2s;
+    }
+
+    .nav-cta:hover { opacity: 0.85; }
+
+    /* ---- TYPOGRAPHY ---- */
+    .label {
+      font-size: 0.75rem;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+      color: var(--body);
+      margin-bottom: 1rem;
+    }
+
+    .headline {
+      font-size: clamp(2.5rem, 6vw, 4.5rem);
+      font-weight: 700;
+      letter-spacing: -0.025em;
+      line-height: 0.95;
+      color: var(--fg);
+    }
+
+    .headline-xl {
+      font-size: clamp(3rem, 8vw, 6rem);
+      font-weight: 700;
+      letter-spacing: -0.03em;
+      line-height: 0.92;
+      color: var(--fg);
+    }
+
+    .subhead {
+      font-size: clamp(1.25rem, 2.5vw, 1.75rem);
+      font-weight: 600;
+      letter-spacing: -0.015em;
+      line-height: 1.1;
+      color: var(--fg);
+    }
+
+    .body-text {
+      font-size: 1.125rem;
+      line-height: 1.65;
+      color: var(--body);
+      font-weight: 400;
+    }
+
+    .body-text strong { color: var(--fg); font-weight: 600; }
+
+    .body-large {
+      font-size: clamp(1.25rem, 2vw, 1.5rem);
+      line-height: 1.55;
+      color: var(--body);
+      font-weight: 400;
+    }
+
+    .body-large strong { color: var(--fg); font-weight: 600; }
+
+    .quote {
+      font-size: clamp(1.5rem, 3.5vw, 2.5rem);
+      font-weight: 600;
+      letter-spacing: -0.02em;
+      line-height: 1.1;
+      color: var(--fg);
+    }
+
+    /* ---- HERO ---- */
+    .hero {
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      padding: 8rem 2rem 6rem;
+      max-width: 980px;
+      margin: 0 auto;
+    }
+
+    .hero-stat {
+      font-size: clamp(5rem, 14vw, 11rem);
+      font-weight: 700;
+      letter-spacing: -0.04em;
+      line-height: 0.85;
+      margin-bottom: 2rem;
+    }
+
+    .hero-context {
+      font-size: clamp(1.1rem, 2vw, 1.4rem);
+      font-weight: 400;
+      color: var(--body);
+      max-width: 480px;
+      line-height: 1.5;
+    }
+
+    .hero-meta {
+      margin-top: 3rem;
+      display: flex;
+      gap: 2.5rem;
+      flex-wrap: wrap;
+    }
+
+    .hero-meta-item {
+      display: flex;
+      flex-direction: column;
+      gap: 0.25rem;
+    }
+
+    .hero-meta-value {
+      font-size: 1.1rem;
+      font-weight: 600;
+    }
+
+    .hero-meta-label {
+      font-size: 0.75rem;
+      font-weight: 500;
+      color: var(--body);
+    }
+
+    /* ---- CARDS ---- */
+    .card {
+      background: var(--light);
+      border-radius: 20px;
+      padding: 2.5rem 2rem;
+    }
+
+    .card h3 {
+      font-size: 1.35rem;
+      font-weight: 700;
+      letter-spacing: -0.01em;
+      margin-bottom: 0.75rem;
+    }
+
+    .card p {
+      font-size: 0.95rem;
+      line-height: 1.65;
+      color: var(--body);
+    }
+
+    .card p strong { color: var(--fg); font-weight: 600; }
+
+    .card-label {
+      font-size: 0.7rem;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+      color: var(--body);
+      margin-bottom: 0.75rem;
+    }
+
+    /* ---- TRACK GRIDS ---- */
+    .tracks {
+      display: grid;
+      grid-template-columns: 1fr 1fr 1fr;
+      gap: 1.25rem;
+      margin: 4rem 0;
+    }
+
+    .track-card {
+      background: var(--light);
+      border-radius: 20px;
+      padding: 2.5rem 2rem;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .track-num {
+      font-size: 0.7rem;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+      color: var(--body);
+      margin-bottom: 1.25rem;
+    }
+
+    .track-card h3 {
+      font-size: 1.5rem;
+      font-weight: 700;
+      letter-spacing: -0.015em;
+      margin-bottom: 0.5rem;
+    }
+
+    .track-target {
+      font-size: 0.85rem;
+      font-weight: 500;
+      color: var(--body);
+      margin-bottom: 1.5rem;
+      padding-bottom: 1.5rem;
+      border-bottom: 1px solid var(--rule);
+    }
+
+    .track-pitch {
+      font-size: 1.05rem;
+      font-weight: 600;
+      line-height: 1.4;
+      color: var(--fg);
+      margin-bottom: 1.25rem;
+    }
+
+    .track-card p {
+      font-size: 0.9rem;
+      line-height: 1.65;
+      color: var(--body);
+    }
+
+    .track-card p strong { color: var(--fg); font-weight: 600; }
+
+    .track-model {
+      margin-top: auto;
+      padding-top: 1.5rem;
+      border-top: 1px solid var(--rule);
+      font-size: 0.8rem;
+      font-weight: 500;
+      color: var(--body);
+      line-height: 1.6;
+    }
+
+    .track-model strong { color: var(--fg); font-weight: 600; }
+
+    /* ---- PROOF STRIP ---- */
+    .proof-strip {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 1.25rem;
+      margin: 4rem 0;
+    }
+
+    .proof-item {
+      text-align: center;
+      padding: 2.5rem 1rem;
+      background: var(--light);
+      border-radius: 20px;
+    }
+
+    .proof-number {
+      font-size: clamp(2rem, 4vw, 3rem);
+      font-weight: 700;
+      letter-spacing: -0.03em;
+      line-height: 1;
+      margin-bottom: 0.5rem;
+    }
+
+    .proof-label {
+      font-size: 0.8rem;
+      font-weight: 500;
+      color: var(--body);
+    }
+
+    /* ---- TIMELINE ---- */
+    .timeline {
+      margin: 4rem 0;
+    }
+
+    .timeline-item {
+      display: grid;
+      grid-template-columns: 120px 1fr;
+      gap: 2rem;
+      padding: 2rem 0;
+      border-bottom: 1px solid var(--rule);
+      align-items: baseline;
+    }
+
+    .timeline-item:first-child {
+      border-top: 1px solid var(--rule);
+    }
+
+    .timeline-when {
+      font-size: 0.85rem;
+      font-weight: 600;
+      color: var(--fg);
+    }
+
+    .timeline-what h4 {
+      font-size: 1.05rem;
+      font-weight: 600;
+      margin-bottom: 0.5rem;
+    }
+
+    .timeline-what p {
+      font-size: 0.95rem;
+      line-height: 1.6;
+      color: var(--body);
+    }
+
+    .timeline-what p strong { color: var(--fg); font-weight: 600; }
+
+    /* ---- DECK STEPS ---- */
+    .deck-steps {
+      margin: 3rem 0;
+      counter-reset: deck;
+    }
+
+    .deck-step {
+      display: grid;
+      grid-template-columns: 3.5rem 1fr;
+      gap: 1.5rem;
+      padding: 1.75rem 0;
+      border-bottom: 1px solid var(--rule);
+      align-items: baseline;
+    }
+
+    .deck-step:first-child {
+      border-top: 1px solid var(--rule);
+    }
+
+    .deck-num {
+      font-size: 0.8rem;
+      font-weight: 600;
+      color: var(--body);
+    }
+
+    .deck-step h4 {
+      font-size: 1.1rem;
+      font-weight: 600;
+      margin-bottom: 0.4rem;
+    }
+
+    .deck-step p {
+      font-size: 0.95rem;
+      line-height: 1.6;
+      color: var(--body);
+    }
+
+    /* ---- HERO IMAGE ---- */
+    .hero-image-contained {
+      max-width: 980px;
+      margin: 0 auto;
+      border-radius: 20px;
+      overflow: hidden;
+    }
+
+    .hero-image-contained img {
+      width: 100%;
+      display: block;
+    }
+
+    .image-scroll {
+      display: flex;
+      gap: 1.25rem;
+      overflow-x: auto;
+      scroll-snap-type: x mandatory;
+      -webkit-overflow-scrolling: touch;
+      padding: 0 2rem 1.5rem;
+      scrollbar-width: none;
+    }
+
+    .image-scroll::-webkit-scrollbar { display: none; }
+
+    .image-scroll-item {
+      flex: 0 0 auto;
+      height: 70vh;
+      max-height: 600px;
+      border-radius: 20px;
+      overflow: hidden;
+      scroll-snap-align: center;
+    }
+
+    .image-scroll-item img {
+      height: 100%;
+      width: auto;
+      display: block;
+    }
+
+    .image-caption {
+      text-align: center;
+      margin-top: 1rem;
+      font-size: 0.8rem;
+      font-weight: 500;
+      color: var(--body);
+      padding: 0 2rem;
+    }
+
+    @media (max-width: 734px) {
+      .image-scroll-item { height: 50vh; max-height: 400px; }
+    }
+
+    /* ---- CTA ---- */
+    .cta-section {
+      text-align: center;
+      padding: 10rem 2rem;
+    }
+
+    .cta-link {
+      display: inline-block;
+      font-size: 0.85rem;
+      font-weight: 600;
+      color: var(--bg);
+      background: var(--fg);
+      padding: 0.9rem 2.5rem;
+      border-radius: 100px;
+      text-decoration: none;
+      margin-top: 2.5rem;
+      transition: opacity 0.2s;
+    }
+
+    .cta-link:hover { opacity: 0.85; }
+
+    /* ---- FOOTER ---- */
+    .footer {
+      padding: 3rem 0 5rem;
+      text-align: center;
+    }
+
+    .footer-mark {
+      font-size: 1rem;
+      font-weight: 700;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      margin-bottom: 0.5rem;
+    }
+
+    .footer-sub {
+      font-size: 0.85rem;
+      color: var(--body);
+    }
+
+    /* ---- FADE ---- */
+    .fade {
+      opacity: 0;
+      transform: translateY(24px);
+      transition: opacity 0.9s cubic-bezier(0.25, 0.46, 0.45, 0.94), transform 0.9s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+    }
+
+    .fade.visible { opacity: 1; transform: translateY(0); }
+    .fade-d1 { transition-delay: 0.1s; }
+    .fade-d2 { transition-delay: 0.2s; }
+    .fade-d3 { transition-delay: 0.3s; }
+
+    /* ---- RESPONSIVE ---- */
+    @media (max-width: 734px) {
+      section { padding: 6rem 0; }
+      .container, .narrow { padding: 0 1.5rem; }
+      .hero { padding: 7rem 1.5rem 4rem; }
+      .hero-meta { gap: 1.5rem; }
+      .tracks { grid-template-columns: 1fr; }
+      .proof-strip { grid-template-columns: 1fr 1fr; }
+      .timeline-item { grid-template-columns: 90px 1fr; gap: 1rem; }
+      .cta-section { padding: 6rem 1.5rem; }
+    }
+
+    @media (min-width: 735px) and (max-width: 1068px) {
+      .tracks { grid-template-columns: 1fr; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- NAV -->
+  <nav class="nav">
+    <div class="nav-inner">
+      <a href="index.html" class="nav-mark">Cube</a>
+      <div class="nav-links" style="align-items:center;">
+        <a href="partner.html" class="nav-link">Partner</a>
+        <a href="coachella.html" class="nav-link">Coachella</a>
+        <a href="partner.html" class="nav-cta">Get your Cube</a>
+      </div>
+    </div>
+  </nav>
+
+  <!-- HERO -->
+  <section class="hero">
+    <div class="label fade">Pitch</div>
+    <div class="hero-stat fade fade-d1">100,000</div>
+    <p class="hero-context fade fade-d2">
+      Conversations started between strangers in five days using a single form factor.
+    </p>
+    <div class="hero-meta fade fade-d3">
+      <div class="hero-meta-item">
+        <span class="hero-meta-value">Art Basel Hong Kong</span>
+        <span class="hero-meta-label">Event</span>
+      </div>
+      <div class="hero-meta-item">
+        <span class="hero-meta-value">March 2026</span>
+        <span class="hero-meta-label">Date</span>
+      </div>
+      <div class="hero-meta-item">
+        <span class="hero-meta-value">19mm cube</span>
+        <span class="hero-meta-label">Form factor</span>
+      </div>
+    </div>
+  </section>
+
+  <div class="break"></div>
+
+  <!-- THE INSIGHT -->
+  <section>
+    <div class="container">
+      <div class="label fade">The Insight</div>
+      <h2 class="headline-xl fade" style="margin-bottom: 2.5rem;">The cube is not<br>the product.<br>The engagement is.</h2>
+      <p class="body-large fade" style="max-width: 640px; margin-bottom: 1.5rem;">
+        At Art Basel Hong Kong, a set of collectible dice generated 100,000 conversations between strangers. Not through advertising. Not through content. <strong>Through a game mechanic built into a physical object.</strong>
+      </p>
+      <p class="body-text fade" style="max-width: 640px;">
+        Visitors received randomized resin dice. To complete a set, they had to find other participants and trade face to face. The cube was the token. The conversation was the product. The connection was what people kept.
+      </p>
+    </div>
+
+    <div class="container" style="margin-top: 4rem;">
+      <div class="proof-strip fade">
+        <div class="proof-item">
+          <div class="proof-number">100K</div>
+          <div class="proof-label">Conversations</div>
+        </div>
+        <div class="proof-item">
+          <div class="proof-number">750</div>
+          <div class="proof-label">Signed sets claimed</div>
+        </div>
+        <div class="proof-item">
+          <div class="proof-number">5</div>
+          <div class="proof-label">Days</div>
+        </div>
+        <div class="proof-item">
+          <div class="proof-number">1</div>
+          <div class="proof-label">Brand partner (Starbucks)</div>
+        </div>
+      </div>
+    </div>
+    <div class="container" style="margin-top: 3rem;">
+      <div class="image-scroll fade">
+        <div class="image-scroll-item"><img src="images/silver-cubes.jpg" alt="Six sterling silver cubes by Asprey Studio, London"></div>
+        <div class="image-scroll-item"><img src="images/resin-cubes.jpg" alt="Transparent resin dice signed by Jack Butcher"></div>
+      </div>
+      <p class="image-caption fade">Sterling silver by Asprey Studio, London. Transparent resin, signed editions.</p>
+    </div>
+  </section>
+
+  <div class="break"></div>
+
+  <!-- WHAT WE'RE BUILDING -->
+  <section>
+    <div class="container">
+      <div class="label fade">What We're Building</div>
+      <h2 class="headline fade" style="margin-bottom: 2.5rem;">A collectible format that<br>any IP can plug into.</h2>
+      <p class="body-large fade" style="max-width: 640px; margin-bottom: 1.5rem;">
+        Cube is a single, fixed form factor &mdash; 19mm &mdash; expressed through infinite materials, collaborations, and editions. The geometry never changes. <strong>The material is the message.</strong>
+      </p>
+      <p class="body-text fade" style="max-width: 640px; margin-bottom: 1.5rem;">
+        A vinyl record is a format. Every artist uses the same 12" disc. The constraint is what makes the shelf possible. Cube does this for physical collectibles.
+      </p>
+      <p class="body-text fade" style="max-width: 640px;">
+        Sterling silver says permanence. Resin says play. Concrete says industrial. Leather says luxury. <strong>Same shape. Completely different meaning.</strong> And every cube sits on the same shelf.
+      </p>
+    </div>
+  </section>
+
+  <div class="break"></div>
+
+  <!-- THREE TRACKS -->
+  <section>
+    <div class="container">
+      <div class="label fade">Partnership Tracks</div>
+      <h2 class="headline fade" style="margin-bottom: 1.5rem;">Three ways in.</h2>
+      <p class="body-text fade" style="max-width: 560px; margin-bottom: 1rem;">
+        Each track is proven by Art Basel. Each one generates a different kind of value.
+      </p>
+    </div>
+
+    <div class="container" style="margin-top: 3rem;">
+      <div class="tracks fade">
+
+        <div class="track-card">
+          <div class="track-num">Track 01</div>
+          <h3>Event Activations</h3>
+          <div class="track-target">Art fairs, design weeks, conferences, brand summits, festivals</div>
+          <div class="track-pitch">"We turned Art Basel into a game. We can do the same for yours."</div>
+          <p>Cube designs a custom trading mechanic for your event. Randomized sets force attendees to find each other, transforming passive foot traffic into active participation. <strong>You're not adding a vendor. You're adding an experience layer.</strong></p>
+          <div class="track-model"><strong>Model:</strong> Fixed design fee + per-unit production. Event owns the experience. Cube owns the format.</div>
+        </div>
+
+        <div class="track-card">
+          <div class="track-num">Track 02</div>
+          <h3>Brand Editions</h3>
+          <div class="track-target">Luxury houses, spirits, automotive, fashion, premium consumer</div>
+          <div class="track-pitch">"Your brand's identity in 19mm of your signature material."</div>
+          <p>The material IS the collaboration. Leather for a luxury house. Brushed aluminum for a car brand. Crystal for a spirits company. No co-branding gymnastics. <strong>The cube speaks your language through what it's made of.</strong></p>
+          <div class="track-model"><strong>Model:</strong> Limited run. Revenue share. Brand brings audience. Cube brings format, production, and provenance.</div>
+        </div>
+
+        <div class="track-card">
+          <div class="track-num">Track 03</div>
+          <h3>Artist Editions</h3>
+          <div class="track-target">Contemporary artists, designers, architects, musicians</div>
+          <div class="track-pitch">"One constraint. Every artist arrives at a different answer."</div>
+          <p>The cube is a brief. 19mm. Six faces. One material. The constraint forces creative decisions that mass merch never requires. <strong>Brand editions drive revenue. Artist editions drive culture.</strong></p>
+          <div class="track-model"><strong>Model:</strong> Numbered editions. Revenue share. Sold through both networks.</div>
+        </div>
+
+      </div>
+    </div>
+  </section>
+
+  <div class="break"></div>
+
+  <!-- WHY IT WORKS FOR BRANDS -->
+  <section>
+    <div class="container">
+      <div class="label fade">Why Brands Enter</div>
+      <h2 class="headline fade" style="margin-bottom: 2.5rem;">Not another keychain.<br>A new category.</h2>
+
+      <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1.25rem; margin-top: 3rem;" class="fade">
+        <div class="card">
+          <h3>Proven social mechanics</h3>
+          <p>The trading mechanic generates measurable engagement. 100K conversations is not a vanity metric. <strong>It's a participation rate most activations dream about.</strong></p>
+        </div>
+        <div class="card">
+          <h3>Material value</h3>
+          <p>These aren't printed tchotchkes. Sterling silver. Resin. Glass. Concrete. <strong>The object has weight, craft, and permanence.</strong> People keep them.</p>
+        </div>
+        <div class="card">
+          <h3>Format, not merch</h3>
+          <p>The brand doesn't co-sign someone else's product. They express their identity through a universal format. <strong>The collaboration is the material choice.</strong></p>
+        </div>
+        <div class="card">
+          <h3>Cross-pollination</h3>
+          <p>Every edition lives on the same shelf. A sneaker collector discovers an art edition. An art collector discovers a brand edition. <strong>Each partner's audience feeds the others.</strong></p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <div class="break"></div>
+
+  <!-- STARBUCKS PROOF -->
+  <section>
+    <div class="container">
+      <div class="label fade">Brand Integration Proof</div>
+      <h2 class="headline fade" style="margin-bottom: 2.5rem;">Starbucks at Basel.</h2>
+      <p class="body-large fade" style="max-width: 640px; margin-bottom: 1.5rem;">
+        Starbucks integrated into the Art Basel mechanic through numbered coasters distributed at the booth and participating stores across the fair. Collect all six, return to the booth, roll for a custom resin set.
+      </p>
+      <p class="body-text fade" style="max-width: 640px; margin-bottom: 1.5rem;">
+        Their brand appeared on coasters and packaging &mdash; built into the experience, not bolted onto it. The green dot was integrated through mechanic design, not messaging.
+      </p>
+      <p class="body-text fade" style="max-width: 640px;">
+        <strong>750 signed sets. All claimed. The format accepted the collaboration without distortion.</strong>
+      </p>
+    </div>
+  </section>
+
+  <div class="break"></div>
+
+  <!-- GO TO MARKET -->
+  <section>
+    <div class="container">
+      <div class="label fade">Go to Market</div>
+      <h2 class="headline fade" style="margin-bottom: 1.5rem;">The rollout.</h2>
+      <p class="body-text fade" style="max-width: 560px;">Each phase builds proof that feeds the next conversation.</p>
+
+      <div class="timeline fade">
+        <div class="timeline-item">
+          <span class="timeline-when">Week 1&ndash;2</span>
+          <div class="timeline-what">
+            <h4>Lead with Basel</h4>
+            <p>Every conversation opens with the same number: 100,000. Reach out to warm contacts who were in the room. <strong>The proof is fresh. Use it.</strong></p>
+          </div>
+        </div>
+        <div class="timeline-item">
+          <span class="timeline-when">Month 1</span>
+          <div class="timeline-what">
+            <h4>Drop Cube 001</h4>
+            <p>The first Cube-original edition. Sterling silver. Establishes the brand's own material voice before bringing in collaborators. <strong>The genesis cube.</strong></p>
+          </div>
+        </div>
+        <div class="timeline-item">
+          <span class="timeline-when">Month 2</span>
+          <div class="timeline-what">
+            <h4>Announce partnerships</h4>
+            <p>2&ndash;3 partnerships go public (one event, one brand). Each announcement feeds the narrative. <strong>The press writes the story for you.</strong></p>
+          </div>
+        </div>
+        <div class="timeline-item">
+          <span class="timeline-when">Month 3</span>
+          <div class="timeline-what">
+            <h4>First brand drop + second activation</h4>
+            <p>Brand edition ships. Event activation runs outside Basel. <strong>Now you have proof in two contexts.</strong></p>
+          </div>
+        </div>
+        <div class="timeline-item">
+          <span class="timeline-when">Month 4+</span>
+          <div class="timeline-what">
+            <h4>The catalog IS the pitch deck</h4>
+            <p>Every new cube makes the shelf more interesting. Every new partner brings a new audience. <strong>The flywheel spins.</strong></p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <div class="break"></div>
+
+  <!-- THE DECK -->
+  <section>
+    <div class="container">
+      <div class="label fade">The Meeting</div>
+      <h2 class="headline fade" style="margin-bottom: 1.5rem;">Five slides. That's it.</h2>
+      <p class="body-text fade" style="max-width: 500px;">Every pitch follows the same structure, regardless of the partner type.</p>
+
+      <div class="deck-steps fade">
+        <div class="deck-step">
+          <span class="deck-num">01</span>
+          <div>
+            <h4>The number</h4>
+            <p>100,000 conversations. 5 days. 1 form factor.</p>
+          </div>
+        </div>
+        <div class="deck-step">
+          <span class="deck-num">02</span>
+          <div>
+            <h4>The mechanic</h4>
+            <p>Show how it worked. Roll, receive, trade, complete. The game is the product.</p>
+          </div>
+        </div>
+        <div class="deck-step">
+          <span class="deck-num">03</span>
+          <div>
+            <h4>The proof</h4>
+            <p>Starbucks plugged in. 750 signed sets. All claimed. The format works with brands.</p>
+          </div>
+        </div>
+        <div class="deck-step">
+          <span class="deck-num">04</span>
+          <div>
+            <h4>The insight</h4>
+            <p>The cube is a format. Formats are what other people's IP plugs into.</p>
+          </div>
+        </div>
+        <div class="deck-step">
+          <span class="deck-num">05</span>
+          <div>
+            <h4>The ask</h4>
+            <p>Your brand/event/IP expressed through this format. Here's what that looks like.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <div class="break"></div>
+
+  <!-- CTA -->
+  <section class="cta-section">
+    <div class="fade">
+      <div class="label" style="text-align: center;">Ready</div>
+      <p class="quote" style="max-width: 700px; margin: 0 auto;">
+        The format is proven.<br>
+        The shelf is being built.<br>
+        The question is whether your<br>
+        brand is on it.
+      </p>
+      <a href="mailto:jack@jackbutcher.com" class="cta-link">Get in touch</a>
+    </div>
+  </section>
+
+  <!-- FOOTER -->
+  <div class="break"></div>
+  <footer class="footer">
+    <p class="footer-mark fade">Cube</p>
+    <p class="footer-sub fade">Jack Butcher</p>
+  </footer>
+
+  <script>
+    const observer = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((entry) => {
+          if (entry.isIntersecting) entry.target.classList.add('visible');
+        });
+      },
+      { threshold: 0.08, rootMargin: '0px 0px -60px 0px' }
+    );
+    document.querySelectorAll('.fade').forEach((el) => observer.observe(el));
+  </script>
+</body>
+</html>
